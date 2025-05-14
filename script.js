@@ -7,7 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedbackForm = document.querySelector('.feedback-form');
     const cakeVideo = document.getElementById('cakeVideo');
     const slides = document.querySelectorAll('.slide');
+    const envelope = document.getElementById("envelope");
+    const flap = envelope.querySelector(".flap");
+    const letter = document.getElementById("letter");
     let currentSlide = 0;
+
+    // Hide all elements initially except welcome screen
+    showCakeBtn.style.display = 'none';
+    cakeContainer.classList.add('hidden');
+    feedbackForm.classList.add('hidden');
+    letter.classList.add('hidden');
+    envelope.style.display = 'none';
 
     // Handle birthday button click
     birthdayBtn.addEventListener('click', () => {
@@ -15,38 +25,35 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             welcomeScreen.style.display = 'none';
             birthdayContent.classList.remove('hidden');
+            // Show only the quotes first
             startSlideshow();
-            //start confetti
+            // Show cake button immediately
+            showCakeBtn.style.display = 'block';
+            showCakeBtn.scrollIntoView({ behavior: 'smooth' });
+            
+            // Initial confetti
             confetti({
                 particleCount: 150,
                 spread: 70,
-                origin: {
-                    y: 0.6
-                }
+                origin: { y: 0.6 }
             });
-            setInterval(() => {
-                confetti({
-                    particleCount: 40,
-                    spread: 60,
-                    startVelocity: 30,
-                    origin: {
-                        x: Math.random(),
-                        y: Math.random() * 0.6
-                    }
-                });
-            }, 1000);
         }, 1000);
     });
 
     // Handle cake button click
     showCakeBtn.addEventListener('click', () => {
-        cakeContainer.classList.remove('hidden');
         showCakeBtn.style.display = 'none';
+        cakeContainer.classList.remove('hidden');
+        cakeContainer.scrollIntoView({ behavior: 'smooth' });
         
         // Play the video
         cakeVideo.play().catch(error => {
             console.log("Video autoplay failed:", error);
         });
+        
+        // Show envelope immediately
+        envelope.style.display = 'block';
+        envelope.scrollIntoView({ behavior: 'smooth' });
         
         // Trigger confetti
         confetti({
@@ -56,18 +63,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle video end
-    cakeVideo.addEventListener('ended', () => {
-        // Show feedback form with animation
-        feedbackForm.classList.remove('hidden');
-        feedbackForm.scrollIntoView({ behavior: 'smooth' });
-        
-        // Trigger confetti
-        confetti({
-            particleCount: 200,
-            spread: 100,
-            origin: { y: 0.6 }
-        });
+    // Handle envelope click
+    envelope.addEventListener("click", () => {
+        flap.style.transform = "rotateX(-180deg)";
+        setTimeout(() => {
+            letter.classList.remove("hidden");
+            letter.scrollIntoView({ behavior: "smooth" });
+            
+            // Show feedback form immediately after letter
+            feedbackForm.classList.remove('hidden');
+            feedbackForm.scrollIntoView({ behavior: 'smooth' });
+            
+            // Final confetti
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+        }, 800);
     });
 
     // Slideshow functionality
